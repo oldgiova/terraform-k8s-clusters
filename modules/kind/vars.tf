@@ -11,5 +11,11 @@ variable "node_image" {
 variable "wait_for_ready" {
   type        = bool
   description = "Defines wether or not the provider will wait for the control plane to be ready."
-  default     = true
+  default     = false
 }
+
+variable "kind_config" {
+  type        = string
+  description = "Kind custom config"
+}
+
