@@ -1,0 +1,19 @@
+server:
+  enabled: "true"
+  ingress:
+    enabled: true
+    annotations:
+      |
+      kubernetes.io/tls-acme: "true"
+
+    ingressClassName: "nginx"
+
+    hosts:
+      - host: vault.oldgiova.sh
+    tls:
+    - secretName: vault.oldgiova.sh
+      hosts:
+        - vault.oldgiova.sh
+  ha:
+    enabled: true
+    replicas: 3
