@@ -23,6 +23,9 @@ nodes:
     hostPort: 443
     protocol: TCP
 - role: worker
+- role: worker
+- role: worker
 EOF
+
 }
 
