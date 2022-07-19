@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "../../modules//cert-manager"
+  source = "../../modules//cert-manager-route53"
 }
 
 dependency "k8s_cluster" {
@@ -17,7 +17,7 @@ dependency "k8s_cluster" {
 }
 
 dependency "cert-manager-crd" {
-  config_path = "../cert-manager-crd"
+  config_path  = "../cert-manager-crd"
   skip_outputs = true
 }
 

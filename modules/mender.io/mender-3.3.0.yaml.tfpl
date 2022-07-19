@@ -1,0 +1,16 @@
+global:
+  enterprise: false
+  mongodb:
+    URL: "mongodb://root:${mender.mongodb_root_password}@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017"
+  nats:
+    URL: "nats://nats:4222"
+  s3:
+    AWS_URI: "http://${mender.minio_domain_name}"
+    AWS_BUCKET: "mender-artifact-storage"
+    AWS_ACCESS_KEY_ID: "${mender.minio_access_key}"
+    AWS_SECRET_ACCESS_KEY: "${mender.minio_secret_key}"
+  url: "https://${mender.mender_server_domain}"
+
+api_gateway:
+  env:
+    SSL: false

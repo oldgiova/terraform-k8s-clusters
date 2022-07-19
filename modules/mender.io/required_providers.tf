@@ -26,4 +26,3 @@ provider "kubernetes" {
   client_key             = var.kubernetes_client_key
   cluster_ca_certificate = var.kubernetes_cluster_ca_certificate
 }
-

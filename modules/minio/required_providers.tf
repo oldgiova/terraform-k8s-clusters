@@ -6,7 +6,11 @@ terraform {
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.11.0"
+      version = ">= 2.0.3"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.7.0"
     }
   }
 }
@@ -25,5 +29,13 @@ provider "kubernetes" {
   client_certificate     = var.kubernetes_client_certificate
   client_key             = var.kubernetes_client_key
   cluster_ca_certificate = var.kubernetes_cluster_ca_certificate
+}
+
+provider "kubectl" {
+  host                   = var.kubernetes_host
+  client_certificate     = var.kubernetes_client_certificate
+  client_key             = var.kubernetes_client_key
+  cluster_ca_certificate = var.kubernetes_cluster_ca_certificate
+  load_config_file       = false
 }
 

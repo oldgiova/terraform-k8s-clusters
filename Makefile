@@ -12,3 +12,13 @@ help: ## This help.
 terrastar-formatter: ## Terra[grunt|form] formatter
 	terraform fmt -recursive .
 	terragrunt hclfmt -recursive .
+
+grafana-port-forward: ## Start Grafana port-forward
+	./.utils/grafana_port_forward.sh
+
+alertmanager-port-forward: ## Start Alertmanager port-forward
+	./.utils/alertmanager_port_forward.sh
+
+prometheus-port-forward: ## Start Prometheus port-forward
+	./.utils/prometheus_port_forward.sh
+
