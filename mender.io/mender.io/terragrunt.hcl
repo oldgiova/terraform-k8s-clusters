@@ -37,7 +37,7 @@ dependency "nats" {
 }
 
 dependency "minio" {
-  config_path  = "../minio"
+  config_path = "../minio"
   mock_outputs = {
     minio_access_key = "dummy"
     minio_secret_key = "dummy"
@@ -45,7 +45,7 @@ dependency "minio" {
 }
 
 dependency "mongodb" {
-  config_path  = "../mongodb"
+  config_path = "../mongodb"
   mock_outputs = {
     mongodb_root_password = "dummy"
   }
@@ -56,13 +56,13 @@ inputs = {
   kubernetes_client_certificate     = dependency.k8s_cluster.outputs.client_certificate
   kubernetes_client_key             = dependency.k8s_cluster.outputs.client_key
   kubernetes_cluster_ca_certificate = dependency.k8s_cluster.outputs.cluster_ca_certificate
-  
+
   mongodb_root_password = dependency.mongodb.outputs.mongodb_root_password
-  minio_domain_name = "minio"
-  minio_access_key  = dependency.minio.outputs.minio_access_key
-  minio_secret_key  = dependency.minio.outputs.minio_secret_key
+  minio_domain_name     = "minio"
+  minio_access_key      = dependency.minio.outputs.minio_access_key
+  minio_secret_key      = dependency.minio.outputs.minio_secret_key
 
   mender_server_domain = "mender.example.org"
-  
+
 }
 

@@ -1,13 +1,11 @@
 resource "random_password" "rootpassword" {
-  length           = 16
-  special          = true
-  override_special = "-_"
+  length  = 16
+  special = false
 }
 
 resource "random_password" "replicasetkey" {
-  length           = 16
-  special          = true
-  override_special = "-_"
+  length  = 16
+  special = false
 }
 
 resource "helm_release" "mongodb" {
@@ -19,7 +17,7 @@ resource "helm_release" "mongodb" {
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "mongodb"
   version          = "11.2.0"
-  namespace        = "default"
+  namespace        = var.cluster_type == "production" ? "prod" : var.cluster_type
   create_namespace = true
 
   set {

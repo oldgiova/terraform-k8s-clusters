@@ -1,11 +1,11 @@
 resource "tls_private_key" "deviceauth" {
   algorithm = "RSA"
-  rsa_bits = 3072
+  rsa_bits  = 3072
 }
 
 resource "tls_private_key" "useradm" {
   algorithm = "RSA"
-  rsa_bits = 3072
+  rsa_bits  = 3072
 }
 
 resource "helm_release" "mender" {
@@ -13,26 +13,26 @@ resource "helm_release" "mender" {
   repository       = "https://charts.mender.io"
   chart            = "mender"
   version          = "3.3.0"
-  namespace        = "default"
+  namespace        = var.cluster_type == "production" ? "prod" : var.cluster_type
   create_namespace = true
   values = [
     templatefile("mender-3.3.0.yaml.tfpl",
       {
         mender = {
-          mongodb_root_password   = var.mongodb_root_password
-          minio_domain_name = var.minio_domain_name
-          minio_access_key = var.minio_access_key
-          minio_secret_key = var.minio_secret_key
-          mender_server_domain = var.mender_server_domain
+          mongodb_root_password = var.mongodb_root_password
+          minio_domain_name     = var.minio_domain_name
+          minio_access_key      = var.minio_access_key
+          minio_secret_key      = var.minio_secret_key
+          mender_server_domain  = var.mender_server_domain
         }
     })
   ]
   set {
-    name = "device_auth.certs.key"
+    name  = "device_auth.certs.key"
     value = tls_private_key.deviceauth.private_key_pem
   }
   set {
-    name = "useradm.certs.key"
+    name  = "useradm.certs.key"
     value = tls_private_key.useradm.private_key_pem
   }
 }

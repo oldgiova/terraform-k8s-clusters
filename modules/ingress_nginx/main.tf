@@ -10,7 +10,13 @@ resource "kubernetes_manifest" "namespace_ingress_nginx" {
       "name" = "ingress-nginx"
     }
   }
+  timeouts {
+    create = "2m"
+    update = "2m"
+    delete = "2m"
+  }
 }
+
 
 resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx" {
   manifest = {
@@ -570,6 +576,9 @@ resource "kubernetes_manifest" "service_ingress_nginx_ingress_nginx_controller_a
 }
 
 resource "kubernetes_deployment" "ingress_nginx_controller" {
+  depends_on = [
+    kubernetes_manifest.namespace_ingress_nginx
+  ]
   metadata {
     name      = "ingress-nginx-controller"
     namespace = "ingress-nginx"
@@ -911,6 +920,11 @@ resource "kubernetes_job" "ingress_nginx_admission_patch" {
         }
       }
     }
+  }
+  timeouts {
+    create = "2m"
+    update = "2m"
+    delete = "2m"
   }
 }
 

@@ -18,3 +18,8 @@ variable "kubernetes_cluster_ca_certificate" {
   description = "Kubernetes cluster ca certificate"
 }
 
+variable "cluster_type" {
+  type        = string
+  description = "Cluster Environment Type"
+  default     = "dev"
+}

@@ -35,3 +35,9 @@ variable "mongodb_replica_count" {
   description = "Mongodb replica count"
   default     = 2
 }
+
+variable "cluster_type" {
+  type        = string
+  description = "Cluster Environment Type"
+  default     = "dev"
+}

@@ -1,7 +1,7 @@
 global:
   enterprise: false
   mongodb:
-    URL: "mongodb://root:${mender.mongodb_root_password}@mongodb-0.mongodb-headless.default.svc.cluster.local:27017,mongodb-1.mongodb-headless.default.svc.cluster.local:27017"
+    URL: "mongodb://root:${mender.mongodb_root_password}@mongodb-0.mongodb-headless:27017,mongodb-1.mongodb-headless:27017"
   nats:
     URL: "nats://nats:4222"
   s3:

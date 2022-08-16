@@ -17,7 +17,7 @@ resource "helm_release" "minio_operator" {
   repository       = "https://operator.min.io/"
   chart            = "minio-operator"
   version          = "4.1.7"
-  namespace        = "default"
+  namespace        = var.cluster_type == "production" ? "prod" : var.cluster_type
   create_namespace = true
   values = [
     file("minio_operator.yaml")
@@ -27,7 +27,7 @@ resource "helm_release" "minio_operator" {
 resource "kubernetes_secret_v1" "minio-creds-secret" {
   metadata {
     name      = "minio-creds-secret"
-    namespace = "default"
+    namespace = var.cluster_type == "production" ? "prod" : var.cluster_type
   }
 
   data = {
@@ -42,7 +42,7 @@ resource "kubectl_manifest" "tenant_minio" {
   depends_on = [
     helm_release.minio_operator
   ]
-  override_namespace = "default"
+  override_namespace = var.cluster_type == "production" ? "prod" : var.cluster_type
   yaml_body          = <<YAML
 apiVersion: minio.min.io/v2
 kind: Tenant
@@ -75,7 +75,7 @@ YAML
 resource "kubernetes_ingress_v1" "minio_ingress" {
   metadata {
     name      = "minio-ingress"
-    namespace = "default"
+    namespace = var.cluster_type == "production" ? "prod" : var.cluster_type
   }
   spec {
     # tls {

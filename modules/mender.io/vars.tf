@@ -19,26 +19,32 @@ variable "kubernetes_cluster_ca_certificate" {
 }
 
 variable "mongodb_root_password" {
-  type = string
+  type        = string
   description = "Mongodb root password"
 }
 
 variable "minio_domain_name" {
-  type = string
+  type        = string
   description = "Minio Domain Name"
 }
 
 variable "minio_access_key" {
-  type = string
+  type        = string
   description = "Minio Access Key"
 }
 
 variable "minio_secret_key" {
-  type = string
+  type        = string
   description = "Minio Secret key"
 }
 
 variable "mender_server_domain" {
-  type = string
+  type        = string
   description = "Mender Server Domain"
+}
+
+variable "cluster_type" {
+  type        = string
+  description = "Cluster Environment Type"
+  default     = "dev"
 }

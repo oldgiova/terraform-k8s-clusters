@@ -3,7 +3,7 @@ resource "helm_release" "nats" {
   repository       = "https://nats-io.github.io/k8s/helm/charts/"
   chart            = "nats"
   version          = "0.8.2"
-  namespace        = "default"
+  namespace        = var.cluster_type == "production" ? "prod" : var.cluster_type
   create_namespace = true
   timeout          = 120
   values = [
