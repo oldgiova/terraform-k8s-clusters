@@ -15,10 +15,17 @@ resource "kubernetes_manifest" "namespace_ingress_nginx" {
     update = "2m"
     delete = "2m"
   }
+  wait {
+    fields = {
+      "status.phase" = "Active"
+    }
+  }
+
 }
 
 
 resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion"                   = "v1"
     "automountServiceAccountToken" = true
@@ -38,6 +45,7 @@ resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "ServiceAccount"
@@ -56,6 +64,7 @@ resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx_admis
 }
 
 resource "kubernetes_manifest" "role_ingress_nginx_ingress_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "Role"
@@ -191,6 +200,7 @@ resource "kubernetes_manifest" "role_ingress_nginx_ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "role_ingress_nginx_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "Role"
@@ -223,6 +233,7 @@ resource "kubernetes_manifest" "role_ingress_nginx_ingress_nginx_admission" {
 }
 
 resource "kubernetes_manifest" "clusterrole_ingress_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "ClusterRole"
@@ -331,6 +342,7 @@ resource "kubernetes_manifest" "clusterrole_ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "clusterrole_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "ClusterRole"
@@ -362,6 +374,7 @@ resource "kubernetes_manifest" "clusterrole_ingress_nginx_admission" {
 }
 
 resource "kubernetes_manifest" "rolebinding_ingress_nginx_ingress_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "RoleBinding"
@@ -392,6 +405,7 @@ resource "kubernetes_manifest" "rolebinding_ingress_nginx_ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "rolebinding_ingress_nginx_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "RoleBinding"
@@ -422,6 +436,7 @@ resource "kubernetes_manifest" "rolebinding_ingress_nginx_ingress_nginx_admissio
 }
 
 resource "kubernetes_manifest" "clusterrolebinding_ingress_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "ClusterRoleBinding"
@@ -450,6 +465,7 @@ resource "kubernetes_manifest" "clusterrolebinding_ingress_nginx" {
 }
 
 resource "kubernetes_manifest" "clusterrolebinding_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "rbac.authorization.k8s.io/v1"
     "kind"       = "ClusterRoleBinding"
@@ -479,6 +495,7 @@ resource "kubernetes_manifest" "clusterrolebinding_ingress_nginx_admission" {
 }
 
 resource "kubernetes_manifest" "configmap_ingress_nginx_ingress_nginx_controller" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "v1"
     "data" = {
@@ -500,6 +517,7 @@ resource "kubernetes_manifest" "configmap_ingress_nginx_ingress_nginx_controller
 }
 
 resource "kubernetes_manifest" "service_ingress_nginx_ingress_nginx_controller" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "Service"
@@ -542,6 +560,7 @@ resource "kubernetes_manifest" "service_ingress_nginx_ingress_nginx_controller" 
 }
 
 resource "kubernetes_manifest" "service_ingress_nginx_ingress_nginx_controller_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "v1"
     "kind"       = "Service"
@@ -929,6 +948,7 @@ resource "kubernetes_job" "ingress_nginx_admission_patch" {
 }
 
 resource "kubernetes_manifest" "ingressclass_nginx" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "networking.k8s.io/v1"
     "kind"       = "IngressClass"
