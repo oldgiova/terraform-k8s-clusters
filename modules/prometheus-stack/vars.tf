@@ -35,3 +35,9 @@ variable "mongodb_replica_count" {
   description = "Mongodb replica count"
   default     = 2
 }
+
+variable "oncall_enabled" {
+  type = bool
+  description = "Grafana OnCall enabled"
+  default = false
+}

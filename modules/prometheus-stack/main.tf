@@ -10,4 +10,12 @@ resource "helm_release" "prometheus_stack" {
   values = [
     file("prometheus.yaml")
   ]
+  #  set {
+  #    name = "grafana.ingress.enabled"
+  #    value = "true"
+  #  }
+  #  set {
+  #    name = "grafana.ingress.hosts[0]"
+  #    value = "grafana.example.org"
+  #  }
 }
