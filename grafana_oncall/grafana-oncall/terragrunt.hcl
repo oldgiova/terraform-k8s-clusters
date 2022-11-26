@@ -30,8 +30,8 @@ inputs = {
   kubernetes_client_key             = dependency.k8s_cluster.outputs.client_key
   kubernetes_cluster_ca_certificate = dependency.k8s_cluster.outputs.cluster_ca_certificate
 
-  oncall_cert_manager_enabled = false
+  oncall_cert_manager_enabled  = false
   oncall_ingress_nginx_enabled = false
-  oncall_mariadb_enabled = true
+  oncall_mariadb_enabled       = true
 }
 

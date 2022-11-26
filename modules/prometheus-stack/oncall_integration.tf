@@ -1,8 +1,8 @@
 
 resource "kubectl_manifest" "alertmanager_integration" {
-  count = var.oncall_enabled ? 1 : 0
+  count              = var.oncall_enabled ? 1 : 0
   override_namespace = "monitoring"
-  yaml_body = <<YAML
+  yaml_body          = <<YAML
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:

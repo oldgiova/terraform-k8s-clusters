@@ -19,87 +19,87 @@ variable "kubernetes_cluster_ca_certificate" {
 }
 
 variable "oncall_base_url" {
-  type = string
+  type        = string
   description = "Grafana OnCall Base Url"
-  default = "oncall.example.org"
+  default     = "oncall.example.org"
 }
 
 variable "oncall_engine_replica_count" {
-  type = number
+  type        = number
   description = "Grafana OnCall Engine Replica count"
-  default = 1
+  default     = 1
 }
 
 variable "oncall_celery_replica_count" {
-  type = number
+  type        = number
   description = "Grafana OnCall Celery Replica count"
-  default = 1
+  default     = 1
 }
 
 variable "oncall_slack_enabled" {
-  type = bool
+  type        = bool
   description = "slack enabled"
-  default = false
+  default     = false
 }
 
 variable "oncall_ingress_annotations_ingress_class" {
-  type = string
+  type        = string
   description = "Ingress Class for ingress"
-  default = "nginx"
+  default     = "nginx"
 }
 
 variable "oncall_cert_manager_issuer_name" {
-  type = string
+  type        = string
   description = "Cert Manager issuer name"
-  default = "selfsigned"
+  default     = "selfsigned"
 }
 
 variable "oncall_ingress_secretName" {
-  type = string
+  type        = string
   description = "Default secretName"
-  default = "oncall-certificate-tls"
+  default     = "oncall-certificate-tls"
 }
 
 variable "oncall_ingress_nginx_enabled" {
-  type = bool
+  type        = bool
   description = "whether to install ingress controller"
-  default = false
+  default     = false
 }
 
 variable "oncall_cert_manager_enabled" {
-  type = bool
+  type        = bool
   description = "Install cert-manager as part of the release"
-  default = false
+  default     = false
 }
 
 variable "oncall_mariadb_enabled" {
-  type = bool
+  type        = bool
   description = "Mariadb enabled inside k8s"
-  default = false
+  default     = false
 }
 
 variable "oncall_externalmmsql_host" {
-  type = string
+  type        = string
   description = "Mysql external host"
-  default = ""
+  default     = ""
 }
 
 variable "oncall_externalmmsql_port" {
-  type = number
+  type        = number
   description = "Mysql external port"
-  default = 3306
+  default     = 3306
 }
 
 variable "oncall_externalmmsql_db_name" {
-  type = string
+  type        = string
   description = "Mysql external db name"
-  default = "oncall"
+  default     = "oncall"
 }
 
 variable "oncall_externalmmsql_user" {
-  type = string
+  type        = string
   description = "Mysql external user"
-  default = "sre-user"
+  default     = "sre-user"
 }
 
 # variable "oncall_externalmmsql_password" {
@@ -108,9 +108,9 @@ variable "oncall_externalmmsql_user" {
 # }
 
 variable "oncall_grafana_enabled" {
-  type = bool
+  type        = bool
   description = "Grafana included"
-  default = true
+  default     = true
 }
 
 

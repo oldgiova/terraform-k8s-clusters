@@ -3,7 +3,7 @@ resource "kubernetes_manifest" "cert_issuer" {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "Issuer"
     "metadata" = {
-      "name" = var.oncall_cert_manager_issuer_name
+      "name"      = var.oncall_cert_manager_issuer_name
       "namespace" = "monitoring"
     }
     "spec" = {
@@ -26,59 +26,59 @@ resource "helm_release" "grafana_oncall" {
     file("grafanaoncall_values_1.0.5.yaml")
   ]
   set {
-    name = "base_url"
+    name  = "base_url"
     value = var.oncall_base_url
   }
   set {
-    name = "engine.replicaCount"
+    name  = "engine.replicaCount"
     value = var.oncall_engine_replica_count
   }
   set {
-    name = "celery.replicaCount"
+    name  = "celery.replicaCount"
     value = var.oncall_celery_replica_count
   }
   set {
-    name = "oncall.slack.enabled"
+    name  = "oncall.slack.enabled"
     value = var.oncall_slack_enabled
   }
   set {
-    name = "ingress.annotations.kubernetes\\.io/ingress\\.class"
+    name  = "ingress.annotations.kubernetes\\.io/ingress\\.class"
     value = var.oncall_ingress_annotations_ingress_class
   }
   set {
-    name = "ingress.annotations.cert-manager\\.io/issuer"
+    name  = "ingress.annotations.cert-manager\\.io/issuer"
     value = var.oncall_cert_manager_issuer_name
   }
   set {
-    name = "ingress.tls[0].secretName"
+    name  = "ingress.tls[0].secretName"
     value = var.oncall_ingress_secretName
   }
   set {
-    name = "ingress-nginx.enabled"
-    value = var.oncall_ingress_nginx_enabled 
+    name  = "ingress-nginx.enabled"
+    value = var.oncall_ingress_nginx_enabled
   }
   set {
-    name = "cert-manager.enabled"
+    name  = "cert-manager.enabled"
     value = var.oncall_cert_manager_enabled
   }
   set {
-    name = "mariadb.enabled"
-    value = var.oncall_mariadb_enabled 
+    name  = "mariadb.enabled"
+    value = var.oncall_mariadb_enabled
   }
   set {
-    name = "externalMysql.host"
+    name  = "externalMysql.host"
     value = var.oncall_externalmmsql_host
   }
   set {
-    name = "externalMysql.port"
+    name  = "externalMysql.port"
     value = var.oncall_externalmmsql_port
   }
   set {
-    name = "externalMysql.db_name"
+    name  = "externalMysql.db_name"
     value = var.oncall_externalmmsql_db_name
   }
   set {
-    name = "externalMysql.user"
+    name  = "externalMysql.user"
     value = var.oncall_externalmmsql_user
   }
   # set {
@@ -86,7 +86,7 @@ resource "helm_release" "grafana_oncall" {
   #   value = var.oncall_externalmmsql_password
   # }
   set {
-    name = "grafana.enabled"
+    name  = "grafana.enabled"
     value = var.oncall_grafana_enabled
   }
 }
