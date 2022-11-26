@@ -10,19 +10,12 @@ resource "kubernetes_manifest" "namespace_ingress_nginx" {
       "name" = "ingress-nginx"
     }
   }
-  timeouts {
-    create = "2m"
-    update = "2m"
-    delete = "2m"
-  }
   wait {
     fields = {
       "status.phase" = "Active"
     }
   }
-
 }
-
 
 resource "kubernetes_manifest" "serviceaccount_ingress_nginx_ingress_nginx" {
   depends_on = [kubernetes_manifest.namespace_ingress_nginx]
@@ -594,162 +587,6 @@ resource "kubernetes_manifest" "service_ingress_nginx_ingress_nginx_controller_a
   }
 }
 
-resource "kubernetes_job" "ingress_nginx_admission_create" {
-  metadata {
-    name      = "ingress-nginx-admission-create"
-    namespace = "ingress-nginx"
-
-    labels = {
-      "app.kubernetes.io/component" = "admission-webhook"
-
-      "app.kubernetes.io/instance" = "ingress-nginx"
-
-      "app.kubernetes.io/name" = "ingress-nginx"
-
-      "app.kubernetes.io/part-of" = "ingress-nginx"
-
-      "app.kubernetes.io/version" = "1.2.1"
-    }
-  }
-
-  spec {
-    template {
-      metadata {
-        name = "ingress-nginx-admission-create"
-
-        labels = {
-          "app.kubernetes.io/component" = "admission-webhook"
-
-          "app.kubernetes.io/instance" = "ingress-nginx"
-
-          "app.kubernetes.io/name" = "ingress-nginx"
-
-          "app.kubernetes.io/part-of" = "ingress-nginx"
-
-          "app.kubernetes.io/version" = "1.2.1"
-        }
-      }
-
-      spec {
-        container {
-          name  = "create"
-          image = "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660"
-          args  = ["create", "--host=ingress-nginx-controller-admission,ingress-nginx-controller-admission.$(POD_NAMESPACE).svc", "--namespace=$(POD_NAMESPACE)", "--secret-name=ingress-nginx-admission"]
-
-          env {
-            name = "POD_NAMESPACE"
-
-            value_from {
-              field_ref {
-                field_path = "metadata.namespace"
-              }
-            }
-          }
-
-          image_pull_policy = "IfNotPresent"
-        }
-
-        restart_policy = "OnFailure"
-
-        node_selector = {
-          "kubernetes.io/os" = "linux"
-        }
-
-        service_account_name = "ingress-nginx-admission"
-
-        security_context {
-          run_as_user     = 2000
-          run_as_non_root = true
-          fs_group        = 2000
-        }
-      }
-    }
-  }
-}
-
-
-resource "kubernetes_job" "ingress_nginx_admission_patch" {
-  depends_on = [
-    kubernetes_manifest.namespace_ingress_nginx,
-    kubernetes_job.ingress_nginx_admission_create
-  ]
-  metadata {
-    name      = "ingress-nginx-admission-patch"
-    namespace = "ingress-nginx"
-
-    labels = {
-      "app.kubernetes.io/component" = "admission-webhook"
-
-      "app.kubernetes.io/instance" = "ingress-nginx"
-
-      "app.kubernetes.io/name" = "ingress-nginx"
-
-      "app.kubernetes.io/part-of" = "ingress-nginx"
-
-      "app.kubernetes.io/version" = "1.2.1"
-    }
-  }
-
-  spec {
-    template {
-      metadata {
-        name = "ingress-nginx-admission-patch"
-
-        labels = {
-          "app.kubernetes.io/component" = "admission-webhook"
-
-          "app.kubernetes.io/instance" = "ingress-nginx"
-
-          "app.kubernetes.io/name" = "ingress-nginx"
-
-          "app.kubernetes.io/part-of" = "ingress-nginx"
-
-          "app.kubernetes.io/version" = "1.2.1"
-        }
-      }
-
-      spec {
-        container {
-          name  = "patch"
-          image = "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660"
-          args  = ["patch", "--webhook-name=ingress-nginx-admission", "--namespace=$(POD_NAMESPACE)", "--patch-mutating=false", "--secret-name=ingress-nginx-admission", "--patch-failure-policy=Fail"]
-
-          env {
-            name = "POD_NAMESPACE"
-
-            value_from {
-              field_ref {
-                field_path = "metadata.namespace"
-              }
-            }
-          }
-
-          image_pull_policy = "IfNotPresent"
-        }
-
-        restart_policy = "OnFailure"
-
-        node_selector = {
-          "kubernetes.io/os" = "linux"
-        }
-
-        service_account_name = "ingress-nginx-admission"
-
-        security_context {
-          run_as_user     = 2000
-          run_as_non_root = true
-          fs_group        = 2000
-        }
-      }
-    }
-  }
-  timeouts {
-    create = "2m"
-    update = "2m"
-    delete = "2m"
-  }
-}
-
 resource "kubernetes_deployment" "ingress_nginx_controller" {
   depends_on = [
     kubernetes_manifest.namespace_ingress_nginx,
@@ -953,6 +790,157 @@ resource "kubernetes_deployment" "ingress_nginx_controller" {
   }
 }
 
+resource "kubernetes_job" "ingress_nginx_admission_create" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
+  metadata {
+    name      = "ingress-nginx-admission-create"
+    namespace = "ingress-nginx"
+
+    labels = {
+      "app.kubernetes.io/component" = "admission-webhook"
+
+      "app.kubernetes.io/instance" = "ingress-nginx"
+
+      "app.kubernetes.io/name" = "ingress-nginx"
+
+      "app.kubernetes.io/part-of" = "ingress-nginx"
+
+      "app.kubernetes.io/version" = "1.2.1"
+    }
+  }
+
+  spec {
+    template {
+      metadata {
+        name = "ingress-nginx-admission-create"
+
+        labels = {
+          "app.kubernetes.io/component" = "admission-webhook"
+
+          "app.kubernetes.io/instance" = "ingress-nginx"
+
+          "app.kubernetes.io/name" = "ingress-nginx"
+
+          "app.kubernetes.io/part-of" = "ingress-nginx"
+
+          "app.kubernetes.io/version" = "1.2.1"
+        }
+      }
+
+      spec {
+        container {
+          name  = "create"
+          image = "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660"
+          args  = ["create", "--host=ingress-nginx-controller-admission,ingress-nginx-controller-admission.$(POD_NAMESPACE).svc", "--namespace=$(POD_NAMESPACE)", "--secret-name=ingress-nginx-admission"]
+
+          env {
+            name = "POD_NAMESPACE"
+
+            value_from {
+              field_ref {
+                field_path = "metadata.namespace"
+              }
+            }
+          }
+
+          image_pull_policy = "IfNotPresent"
+        }
+
+        restart_policy = "OnFailure"
+
+        node_selector = {
+          "kubernetes.io/os" = "linux"
+        }
+
+        service_account_name = "ingress-nginx-admission"
+
+        security_context {
+          run_as_user     = 2000
+          run_as_non_root = true
+          fs_group        = 2000
+        }
+      }
+    }
+  }
+}
+
+
+resource "kubernetes_job" "ingress_nginx_admission_patch" {
+  depends_on = [
+    kubernetes_manifest.namespace_ingress_nginx,
+    kubernetes_job.ingress_nginx_admission_create
+  ]
+  metadata {
+    name      = "ingress-nginx-admission-patch"
+    namespace = "ingress-nginx"
+
+    labels = {
+      "app.kubernetes.io/component" = "admission-webhook"
+
+      "app.kubernetes.io/instance" = "ingress-nginx"
+
+      "app.kubernetes.io/name" = "ingress-nginx"
+
+      "app.kubernetes.io/part-of" = "ingress-nginx"
+
+      "app.kubernetes.io/version" = "1.2.1"
+    }
+  }
+
+  spec {
+    template {
+      metadata {
+        name = "ingress-nginx-admission-patch"
+
+        labels = {
+          "app.kubernetes.io/component" = "admission-webhook"
+
+          "app.kubernetes.io/instance" = "ingress-nginx"
+
+          "app.kubernetes.io/name" = "ingress-nginx"
+
+          "app.kubernetes.io/part-of" = "ingress-nginx"
+
+          "app.kubernetes.io/version" = "1.2.1"
+        }
+      }
+
+      spec {
+        container {
+          name  = "patch"
+          image = "registry.k8s.io/ingress-nginx/kube-webhook-certgen:v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660"
+          args  = ["patch", "--webhook-name=ingress-nginx-admission", "--namespace=$(POD_NAMESPACE)", "--patch-mutating=false", "--secret-name=ingress-nginx-admission", "--patch-failure-policy=Fail"]
+
+          env {
+            name = "POD_NAMESPACE"
+
+            value_from {
+              field_ref {
+                field_path = "metadata.namespace"
+              }
+            }
+          }
+
+          image_pull_policy = "IfNotPresent"
+        }
+
+        restart_policy = "OnFailure"
+
+        node_selector = {
+          "kubernetes.io/os" = "linux"
+        }
+
+        service_account_name = "ingress-nginx-admission"
+
+        security_context {
+          run_as_user     = 2000
+          run_as_non_root = true
+          fs_group        = 2000
+        }
+      }
+    }
+  }
+}
 resource "kubernetes_manifest" "ingressclass_nginx" {
   depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
@@ -975,6 +963,7 @@ resource "kubernetes_manifest" "ingressclass_nginx" {
 }
 
 resource "kubernetes_manifest" "validatingwebhookconfiguration_ingress_nginx_admission" {
+  depends_on = [kubernetes_manifest.namespace_ingress_nginx]
   manifest = {
     "apiVersion" = "admissionregistration.k8s.io/v1"
     "kind"       = "ValidatingWebhookConfiguration"
