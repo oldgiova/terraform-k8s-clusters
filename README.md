@@ -12,3 +12,9 @@ Mender.io instance on Kind with all dependencies:
 
 ## [grafana_oncall](grafana_oncall)
 Grafana oncall stack
+
+## [basic](basic)
+KinD with basic stuff:
+* Ingress
+* cert-manager
+* prometheus
