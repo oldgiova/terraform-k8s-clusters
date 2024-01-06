@@ -1,19 +1,4 @@
 #
-# variables
-# 
-variable "fluxcd" {
-  description = <<EOF
-Fluxcd configuration
-EOF
-  type = object({
-    enabled = optional(bool, false)
-    # https://github.com/fluxcd-community/helm-charts/tree/flux2-2.8.0/charts/flux2
-    helm_version = optional(string, "2.8.0")
-  })
-  default = {}
-}
-
-#
 # main
 #
 resource "kubernetes_namespace" "flux_system" {
@@ -68,12 +53,4 @@ resource "helm_release" "fluxcd" {
           memory: 1Gi
     EOF
   ]
-
-  dynamic "set" {
-    for_each = var.infra_image_pull_secret.enabled ? [1] : []
-    content {
-      name  = "imagePullSecrets[0]"
-      value = var.infra_image_pull_secret.name
-    }
-  }
 }

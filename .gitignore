@@ -6,3 +6,5 @@
 .terragrunt-cache
 .terraform.lock.hcl
 terragrunt
+gen_required_provider_override.tf
+provider.tf
