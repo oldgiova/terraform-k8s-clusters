@@ -1,17 +1,17 @@
 terraform {
   required_providers {
-    helm = {
-      source  = "hashicorp/helm"
-      version = "2.6.0"
-    }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.11.0"
+      version = "2.25.2"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.14.0"
     }
   }
 }
 
-provider "helm" {
+provider "kubernetes" {
   host                   = var.k8s.endpoint
   cluster_ca_certificate = base64decode(var.k8s.ca_certificate)
   dynamic "exec" {
@@ -27,7 +27,7 @@ provider "helm" {
   client_certificate = var.k8s.client_certificate != "" ? base64decode(var.k8s.client_certificate) : ""
 }
 
-provider "kubernetes" {
+provider "kubectl" {
   host                   = var.k8s.endpoint
   cluster_ca_certificate = base64decode(var.k8s.ca_certificate)
   dynamic "exec" {

@@ -15,7 +15,19 @@ variable "wait_for_ready" {
 }
 
 variable "kind_config" {
-  type        = string
   description = "Kind custom config"
+  type = object({
+    api_version            = string
+    kubeadm_config_patches = list(string)
+    worker_node_count      = number
+    api_server_address     = optional(string, "127.0.0.1")
+    api_server_port        = optional(string, "6443")
+  })
+}
+
+variable "api_server_address" {
+  type        = string
+  description = "Kind apiServerAddress"
+  default     = "127.0.0.1"
 }
 
