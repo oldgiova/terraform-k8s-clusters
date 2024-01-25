@@ -30,30 +30,40 @@ inputs = {
     client_certificate = dependency.k8s_cluster.outputs.client_certificate_enc
   }
 
+  secrets = {
+    minio-creds-secret = {
+      namespace = "default"
+      type      = "Opaque"
+      values = [
+        {
+          secret_name  = "accesskey"
+          secret_value = get_env("MINIO_ACCESS_KEY")
+        },
+        {
+          secret_name  = "secretkey"
+          secret_value = get_env("MINIO_SECRET_KEY")
+        }
+      ]
+    }
+  }
   helm = {
     namespace = {
-      create = true
-      name   = "ingress-nginx"
+      create = false
+      name   = "default"
     }
-    # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/Chart.yaml
-    repo_url            = "https://kubernetes.github.io/ingress-nginx"
-    helmrepository_name = "ingress-nginx"
-    helmrelease_name    = "ingress-nginx"
-    chart_name          = "ingress-nginx"
-    version             = "4.9.0"
+    repo_url            = "https://operator.min.io/"
+    helmrepository_name = "minio"
+    helmrelease_name    = "minio"
+    chart_name          = "minio-operator"
+    version             = "4.1.7"
     values = {
-      name           = "ingress-nginx-values"
-      configmap_key  = "values-ingress-nginx.yaml"
+      name           = "minio-values"
+      configmap_key  = "values-minio.yaml"
       values_content = <<EOS
-controller:
-  resources:
-    limits:
-      cpu: 400m
-      memory: 300Mi
-    requests:
-      cpu: 50m
-      memory: 90Mi
+tenants: {}
 EOS
     }
   }
 }
+
+

@@ -1,9 +1,15 @@
-include {
-  path = find_in_parent_folders()
+include "root" {
+  path   = find_in_parent_folders()
+  expose = true
 }
 
 terraform {
-  source = "../../modules//metrics-server"
+  source = "../../modules//fluxcd-helmrelease"
+}
+
+dependency "flux" {
+  config_path  = "../fluxcd"
+  skip_outputs = true
 }
 
 dependency "k8s_cluster" {
@@ -17,10 +23,33 @@ dependency "k8s_cluster" {
 }
 
 inputs = {
-  kubernetes_host                   = "https://127.0.0.1:6443"
-  kubernetes_client_certificate     = dependency.k8s_cluster.outputs.client_certificate
-  kubernetes_client_key             = dependency.k8s_cluster.outputs.client_key
-  kubernetes_cluster_ca_certificate = dependency.k8s_cluster.outputs.cluster_ca_certificate_plain
+  k8s = {
+    endpoint           = "https://${include.root.inputs.kubernetes_host}:6443"
+    ca_certificate     = dependency.k8s_cluster.outputs.cluster_ca_certificate
+    client_key         = dependency.k8s_cluster.outputs.client_key_enc
+    client_certificate = dependency.k8s_cluster.outputs.client_certificate_enc
+  }
+
+  helm = {
+    namespace = {
+      create = false
+      name   = "kube-system"
+    }
+    # https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server
+    repo_url            = "https://kubernetes-sigs.github.io/metrics-server"
+    helmrepository_name = "metrics-server"
+    helmrelease_name    = "metrics-server"
+    chart_name          = "metrics-server"
+    version             = "3.8.2"
+    values = {
+      name           = "values-metrics-server"
+      configmap_key  = "values-metrics-server.yaml"
+      values_content = <<EOF
+args:
+  - --kubelet-insecure-tls
+EOF
+    }
+  }
 }
 
 
