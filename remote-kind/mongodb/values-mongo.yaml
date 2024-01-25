@@ -1,0 +1,79 @@
+image:
+  registry: ${image.registry}
+  repository: ${image.repository}
+  tag: ${image.tag}
+
+architecture: ${architecture.architecture}
+auth:
+  enabled: true
+  rootUser: root
+  rootPassword: ${config.root_password}
+  replicaSetKey: ${config.replica_set_key}
+
+%{ if length(config.topology_spread_constraints) > 0 }
+topologySpreadConstraints:
+  ${indent(2, yamlencode(config.topology_spread_constraints))}
+%{ endif }
+
+replicaCount: ${architecture.replicas}
+
+affinity: %{ if length(config.affinity) > 0 }
+  ${indent(2, yamlencode(config.affinity))}
+%{ endif }
+
+resources: %{ if length(config.resources) > 0 }
+  ${indent(2, yamlencode(config.resources))}
+%{ endif }
+
+containerPorts:
+  mongodb: 27017
+
+customLivenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 6
+  successThreshold: 1
+  tcpSocket:
+    port: mongodb
+
+customReadinessProbe: %{ if length(config.custom_readiness_probe) > 0 }
+  ${indent(4, yamlencode(config.custom_readiness_probe))}
+%{ endif }
+ 
+service:
+  nameOverride: ${config.name}
+  type: ClusterIP
+  portName: mongodb
+  ports:
+    mongodb: 27017
+
+persistence:
+  enabled: ${storage.persistence_enabled}
+  %{ if length(storage.persistence_name) > 0 }
+  name: ${storage.persistence_name}
+  %{ endif }
+  %{ if length(storage.persistence_mount_path) > 0 }
+  mountPath: ${storage.persistence_mount_path}
+  %{ endif }
+  size: ${storage.size}
+  storageClass: ${storage.storage_class}
+
+arbiter:
+  enabled: ${architecture.arbiter_enabled}
+  affinity: %{ if length(config.affinity) > 0 }
+    ${indent(4, yamlencode(config.affinity))}
+  %{ endif }
+  resources: %{ if length(config.resources_arbiter) > 0 }
+    ${indent(4, yamlencode(config.resources_arbiter))}
+  %{ endif }
+
+  customLivenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 20
+    timeoutSeconds: 10
+    failureThreshold: 6
+    successThreshold: 1
+    tcpSocket:
+      port: mongodb
+

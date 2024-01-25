@@ -1,0 +1,101 @@
+alertmanager:
+  alertmanagerSpec:
+    resources:
+      requests:
+        memory: "200Mi"
+        cpu: "100m"
+      limits:
+        memory: "500Mi"
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${config.prometheus_storage_class_name} 
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${config.alertmanager_storage_size}
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+
+kubeControllerManager:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeProxy:
+  enabled: false
+
+%{ if config.grafana_image_tag != "" }
+grafana.image.tag: ${config.grafana_image_tag}
+%{ endif }
+
+grafana:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 500Mi
+    requests:
+      cpu: 100m
+      memory: 300Mi
+
+  ingress:
+    enabled: ${config.enable_grafana_ingress}
+  persistence:
+    enabled: false
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+
+# enable data persistency
+prometheus:
+  prometheusSpec:
+    retention: ${config.prometheus_metrics_retention}
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "100m"
+      limits:
+        memory: "2Gi"
+    serviceMonitorSelectorNilUsesHelmValues: false
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: ${config.prometheus_storage_class_name} 
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: ${config.prometheus_storage_size}
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+
+prometheusOperator:
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+
+prometheus-node-exporter:
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+kube-state-metric:
+  service:
+    annotations:
+      service.kubernetes.io/topology-aware-hints: auto
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
