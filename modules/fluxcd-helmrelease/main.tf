@@ -74,3 +74,18 @@ spec:
     valuesKey: ${var.helm.values.configmap_key}
 YAML
 }
+
+# Optionally create application secrets
+# secret to pull private images
+resource "kubernetes_secret_v1" "secrets" {
+  for_each = var.secrets != null ? var.secrets : {}
+  metadata {
+    name      = each.key
+    namespace = each.value.namespace
+  }
+  type = each.value.type
+  data = {
+    for item in each.value.values : item.secret_name => item.secret_value
+  }
+}
+

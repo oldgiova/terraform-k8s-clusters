@@ -49,3 +49,28 @@ EOF
     helmrelease_name    = optional(string, "hostedmender")
   })
 }
+
+variable "secrets" {
+  description = <<EOF
+Secrets that can be added to the flux helm environment.
+For example regctl secrets
+
+the .metadata.name of the secret is the key of the map
+
+namespace: the namespace where to place the secret
+type: k8s secret type (Opaque, kubernetes.io/dockerconfigjson, ...)
+values: a list of key/value maps (multiple keys are possible inside the secret)
+  secret_name: the key of the secret
+  secret_value:  the value of the secret
+EOF
+  type = map(object({
+    #name          = string
+    namespace = string
+    type      = string
+    values = list(object({
+      secret_name  = optional(string, "")
+      secret_value = string
+    }))
+  }))
+  default = {}
+}
