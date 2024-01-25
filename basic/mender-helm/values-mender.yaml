@@ -1,0 +1,82 @@
+global:
+  enterprise: true
+  image:
+    username: ${config.username}
+    password: ${config.password}
+  nats:
+    URL: ""
+  s3:
+    AWS_URI: "https://minio"
+    AWS_BUCKET: "mender-artifact-storage"
+    AWS_ACCESS_KEY_ID: ${config.minio_accesskey}
+    AWS_SECRET_ACCESS_KEY: ${config.minio_secretkey}
+  url: "https://mender-oci.oldgiova.sh"
+
+default:
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 2
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 70
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 70
+    behavior:
+      scaleUp:
+        policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 45
+        stabilizationWindowSeconds: 120
+      scaleDown:
+        policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120
+        stabilizationWindowSeconds: 240
+
+mongodb:
+  enabled: true
+
+redis:
+  enabled: true
+
+nats:
+  enabled: true
+  cluster:
+    enabled: true
+    replicas: 3
+  nats:
+    jetstream:
+      fileStorage:
+        storageClassName: "standard"
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  path: /
+  annotations: {}
+  hosts:
+    - mender-oci.oldgiova.sh
+
+
+device_auth:
+  certs:
+    existingSecret: "rsa-device-auth"
+
+tenantadm:
+  certs:
+    existingSecret: "rsa-tenantadm"
+
+useradm:
+  certs:
+    existingSecret: "rsa-useradm"
