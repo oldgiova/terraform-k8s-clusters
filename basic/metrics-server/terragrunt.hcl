@@ -3,7 +3,7 @@ include {
 }
 
 terraform {
-  source = "../../modules//prometheus-stack"
+  source = "../../modules//metrics-server"
 }
 
 dependency "k8s_cluster" {
@@ -22,4 +22,5 @@ inputs = {
   kubernetes_client_key             = dependency.k8s_cluster.outputs.client_key
   kubernetes_cluster_ca_certificate = dependency.k8s_cluster.outputs.cluster_ca_certificate_plain
 }
+
 
