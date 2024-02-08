@@ -54,7 +54,7 @@ resource "kubernetes_secret" "aws_keys" {
 }
 
 
-resource "kubernetes_manifest" "issuer_letsencrypt_prod" {
+resource "kubernetes_manifest" "issuer_letsencrypt" {
   manifest = {
     "apiVersion" = "cert-manager.io/v1"
     "kind"       = "ClusterIssuer"

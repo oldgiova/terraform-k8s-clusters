@@ -4,7 +4,9 @@ include "root" {
 }
 
 terraform {
-  source = "git::https://github.com/NorthernTechHQ/nt-infra.git//modules/k8s/redis-cluster?depth=1&ref=k8s-v1.0"
+  #source = "git::https://github.com/NorthernTechHQ/nt-iac.git//modules/k8s/redis-cluster?ref=k8s-v1.0"
+    #source = "git::https://github.com/NorthernTechHQ/nt-iac.git//modules/k8s/redis-cluster?depth=1&ref=k8s-v1.0"
+  source = "/home/giova/src/github/northerntechhq/worktrees/nt-iac/main//modules//k8s/redis-cluster"
 }
 
 dependency "k8s_cluster" {
@@ -49,8 +51,8 @@ inputs = {
   }
 
   cluster = {
-    nodes    = 6
-    replicas = 1
+    nodes    = 3
+    replicas = 0
   }
 
 }

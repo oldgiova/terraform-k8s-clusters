@@ -31,7 +31,7 @@ inputs = {
 
   image = {
     repository = "nats"
-    tag        = "2.9.21-scratch"
+    tag        = "2.9.24-scratch"
     pullPolicy = "IfNotPresent"
     registry   = "docker.io"
   }

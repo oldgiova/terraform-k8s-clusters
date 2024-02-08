@@ -1,0 +1,194 @@
+global:
+  enterprise: true
+  image:
+    username: ${config.username}
+    password: ${config.password}
+  mongodb:
+    existingSecret: "mongodb-common"
+  nats:
+    URL: nats://mender-nats:4222
+  s3:
+    AWS_URI: "http://minio"
+    AWS_BUCKET: "mender-artifact-storage"
+    AWS_ACCESS_KEY_ID: ${config.minio_accesskey}
+    AWS_SECRET_ACCESS_KEY: ${config.minio_secretkey}
+  url: "https://mender-oci.oldgiova.sh"
+  redis:
+    username: user
+    password: "verySecretPassword"
+    URL: "mender-redis-redis-cluster"
+
+default:
+  imagePullSecrets:
+    - docker-hub-secret-rollnrenew
+    - docker-hub-secret
+  hpa:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 2
+    metrics:
+      - type: Resource
+        resource:
+          name: cpu
+          target:
+            type: Utilization
+            averageUtilization: 70
+      - type: Resource
+        resource:
+          name: memory
+          target:
+            type: Utilization
+            averageUtilization: 70
+    behavior:
+      scaleUp:
+        policies:
+        - type: Pods
+          value: 2
+          periodSeconds: 45
+        stabilizationWindowSeconds: 120
+      scaleDown:
+        policies:
+        - type: Pods
+          value: 1
+          periodSeconds: 120
+        stabilizationWindowSeconds: 240
+
+      #mongodb:
+      #  enabled: false
+      #  architecture: standalone
+      #  useStatefulSet: true
+      #  auth:
+      #    enabled: false
+      #  global:
+      #    storageClass: "standard"
+      #
+      #nats:
+      #  enabled: false
+      #  cluster:
+      #    enabled: false
+      #  nats:
+      #    jetstream:
+      #      fileStorage:
+      #        storageClassName: "standard"
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 50%
+      maxUnavailable: 0
+
+mongodb:
+  enabled: false
+
+redis:
+  enabled: false
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  path: /
+  annotations:
+    cert-manager.io/cluster-issuer: ${config.issuer_name}
+  hosts:
+    - mender-oci.oldgiova.sh
+  tls:
+    - secretName: mender-ingress-tls
+      hosts:
+        - mender-oci.oldgiova.sh
+
+api_gateway:
+  env:
+    SSL: false
+  compression: false
+  security_redirect:
+    redirectregex:
+      regex: "^(https?://[^/]+)/security.txt"
+      replacement: https://northern.tech/security.txt
+  minio:
+    enabled: false
+  storage_proxy:
+    enabled: true
+  rateLimit:
+    average: 50
+    burst: 50
+    period: "1s"
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+  authRateLimit:
+    average: 1
+    burst: 30
+    period: "60s"
+    sourceCriterion:
+      ipStrategy:
+        depth: 1
+  extraArgs:
+    - --accesslog.fields.names.ClientUsername=drop
+    - --accesslog.fields.names.StartLocal=drop
+    - --accesslog.fields.names.RequestLine=drop
+    - --accesslog.fields.names.OriginStatusLine=drop
+    - --accesslog.fields.names.DownstreamStatusLine=drop
+    - --accesslog.fields.headers.defaultmode=drop
+    - --accesslog.fields.headers.names.X-Men-Requestid=keep
+    - --entryPoints.http.forwardedHeaders.insecure=true
+    - --entryPoints.http.transport.respondingTimeouts.idleTimeout=7200
+    - --entryPoints.http.transport.respondingTimeouts.readTimeout=7200
+    - --entryPoints.http.transport.respondingTimeouts.writeTimeout=7200
+    - --metrics.prometheus.entryPoint=metrics
+    - --providers.file.directory=/etc/traefik/config
+    - --entryPoints.metrics.address=:9090
+
+gui:
+  service:
+    portError: 8080
+
+deployments:
+  automigrate: false
+
+device_auth:
+  automigrate: false
+  certs:
+    existingSecret: "rsa-device-auth"
+
+generate_delta_worker:
+  automigrate: false
+
+inventory:
+  automigrate: false
+
+useradm:
+  automigrate: false
+  certs:
+    existingSecret: "rsa-useradm"
+  image:
+    tag: saas-v2024.01.24
+
+workflows:
+  automigrate: false
+  image:
+    tag: saas-v2024.01.24
+
+create_artifact_worker:
+  automigrate: false
+
+auditlogs:
+  automigrate: false
+
+iot_manager:
+  automigrate: false
+  image:
+    tag: saas-v2024.01.24
+
+deviceconnect:
+  automigrate: false
+
+deviceconfig:
+  automigrate: false
+  image:
+    tag: saas-v2024.01.24
+
+devicemonitor:
+  automigrate: false
+
+tenantadm:
+  certs:
+    existingSecret: "rsa-tenantadm"
+

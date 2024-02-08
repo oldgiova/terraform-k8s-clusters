@@ -4,7 +4,7 @@ include "root" {
 }
 
 terraform {
-  source = "../../modules//fluxcd-helmrelease"
+  source = "../../modules//ingress_nginx"
 }
 
 dependency "flux" {
@@ -28,36 +28,5 @@ inputs = {
     ca_certificate     = dependency.k8s_cluster.outputs.cluster_ca_certificate
     client_key         = dependency.k8s_cluster.outputs.client_key_enc
     client_certificate = dependency.k8s_cluster.outputs.client_certificate_enc
-  }
-
-  helm = {
-    namespace = {
-      create = true
-      name   = "ingress-nginx"
-    }
-    # https://github.com/kubernetes/ingress-nginx/blob/main/charts/ingress-nginx/Chart.yaml
-    repo_url            = "https://kubernetes.github.io/ingress-nginx"
-    helmrepository_name = "ingress-nginx"
-    helmrelease_name    = "ingress-nginx"
-    chart_name          = "ingress-nginx"
-    version             = "4.9.0"
-    values = {
-      name           = "ingress-nginx-values"
-      configmap_key  = "values-ingress-nginx.yaml"
-      values_content = <<EOS
-controller:
-  ingressClassResource:
-    name: nginx
-    enabled: true
-    default: true
-  resources:
-    limits:
-      cpu: 200m
-      memory: 200Mi
-    requests:
-      cpu: 50m
-      memory: 90Mi
-EOS
-    }
   }
 }
