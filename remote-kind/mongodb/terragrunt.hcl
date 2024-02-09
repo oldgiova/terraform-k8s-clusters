@@ -37,11 +37,11 @@ inputs = {
       values = [
         {
           secret_name  = "MONGO"
-          secret_value = "mongodb+srv://mender-mongo.default.svc.cluster.local/?tls=false"
+          secret_value = "mongodb+srv://mender-mongo.default.svc.cluster.local/?tls=false&connectTimeoutMS=600000"
         },
         {
           secret_name  = "MONGO_URL"
-          secret_value = "mongodb+srv://mender-mongo.default.svc.cluster.local/?tls=false"
+          secret_value = "mongodb+srv://mender-mongo.default.svc.cluster.local/?tls=false&connectTimeoutMS=600000"
         }
       ]
 
@@ -81,12 +81,12 @@ inputs = {
             replica_set_key = run_cmd("--terragrunt-quiet", "pass", "show", "oldgiova/mender/mongodb-test-password")
             resources = {
               "limits" : {
-                "memory" : "2Gi",
-                "cpu" : "200m"
+                "memory" : "3Gi",
+                "cpu" : "1"
               }
               "requests" : {
-                "memory" : "128Mi",
-                "cpu" : "25m",
+                "memory" : "500Mi",
+                "cpu" : "100m",
               }
             }
             resources_arbiter = {}

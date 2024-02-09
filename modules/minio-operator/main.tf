@@ -38,40 +38,6 @@ resource "kubernetes_secret_v1" "minio-creds-secret" {
   type = "Opaque"
 }
 
-resource "kubectl_manifest" "tenant_minio" {
-  depends_on = [
-    helm_release.minio_operator
-  ]
-  override_namespace = var.cluster_type == "production" ? "prod" : var.cluster_type
-  yaml_body          = <<YAML
-apiVersion: minio.min.io/v2
-kind: Tenant
-metadata:
-  name: minio
-  labels:
-    app: minio
-spec:
-  image: minio/minio:RELEASE.2021-06-17T00-10-46Z
-  credsSecret:
-    name: minio-creds-secret
-  pools:
-    - servers: 2
-      volumesPerServer: 2
-      volumeClaimTemplate:
-        metadata:
-          name: data
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 10Gi
-          storageClassName: "standard"
-  mountPath: /export
-  requestAutoCert: false
-YAML
-}
-
 resource "kubernetes_ingress_v1" "minio_ingress" {
   metadata {
     name      = "minio-ingress"

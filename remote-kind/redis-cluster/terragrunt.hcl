@@ -6,7 +6,8 @@ include "root" {
 terraform {
   #source = "git::https://github.com/NorthernTechHQ/nt-iac.git//modules/k8s/redis-cluster?ref=k8s-v1.0"
     #source = "git::https://github.com/NorthernTechHQ/nt-iac.git//modules/k8s/redis-cluster?depth=1&ref=k8s-v1.0"
-  source = "/home/giova/src/github/northerntechhq/worktrees/nt-iac/main//modules//k8s/redis-cluster"
+    #source = "/home/giova/src/github/northerntechhq/worktrees/nt-iac/main//modules//k8s/redis-cluster"
+  source = "/home/giova/src/github/northerntechhq/worktrees/nt-iac/MC-6522-redis-cluster-fix/modules//k8s/redis-cluster"
 }
 
 dependency "k8s_cluster" {
@@ -28,7 +29,7 @@ inputs = {
   }
 
   namespace    = "default"
-  helm_version = "9.2.1"
+  helm_version = "9.5.2"
 
   service = {
     annotations = {
@@ -47,12 +48,13 @@ inputs = {
         "cpu" : "200m",
       }
     }
-    password     = ""
+    password     = "verysecretpassword"
   }
 
   cluster = {
-    nodes    = 3
-    replicas = 0
+    nodes    = 6
+    replicas = 1
   }
 
+  create_redis_url_secret = true
 }

@@ -22,6 +22,13 @@ dependency "k8s_cluster" {
   }
 }
 
+dependency "redis" {
+  config_path = "../redis-cluster"
+  mock_outputs = {
+    redis_connection_string = "placeholder"
+  }
+}
+
 dependency "cert_manager" {
   config_path = "../cert-manager-route53"
   mock_outputs = {
@@ -101,7 +108,7 @@ inputs = {
     }
 
     install = {
-      retries = 1
+      retries = 0
     }
 
     values = {
@@ -118,6 +125,7 @@ inputs = {
             minio_accesskey = get_env("MINIO_ACCESS_KEY")
             minio_secretkey = get_env("MINIO_SECRET_KEY")
             issuer_name     = dependency.cert_manager.outputs.issuer_name
+            redis_secret    = "redis-connection-string"
           }
         }
       )

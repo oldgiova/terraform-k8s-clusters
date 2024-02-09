@@ -1,5 +1,4 @@
 resource "kubernetes_manifest" "tenant_minio" {
-  depends_on = [kubectl_manifest.flux_helmrelease]
   manifest = {
     "apiVersion" = "minio.min.io/v2"
     "kind"       = "Tenant"
@@ -8,7 +7,7 @@ resource "kubernetes_manifest" "tenant_minio" {
         "app" = "minio"
       }
       "name"      = "minio"
-      "namespace" = var.helm.namespace.name
+      "namespace" = var.namespace
     }
     "spec" = {
       "credsSecret" = {

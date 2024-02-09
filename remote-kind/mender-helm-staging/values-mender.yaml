@@ -12,11 +12,9 @@ global:
     AWS_BUCKET: "mender-artifact-storage"
     AWS_ACCESS_KEY_ID: ${config.minio_accesskey}
     AWS_SECRET_ACCESS_KEY: ${config.minio_secretkey}
-  url: "https://mender-oci.oldgiova.sh"
   redis:
-    username: user
-    password: "verySecretPassword"
-    URL: "mender-redis-redis-cluster"
+    existingSecret: ${config.redis_secret}
+  url: "https://mender-oci.oldgiova.sh"
 
 default:
   imagePullSecrets:
@@ -74,6 +72,10 @@ default:
     rollingUpdate:
       maxSurge: 50%
       maxUnavailable: 0
+  customEnvs:
+    - name: LOG_LEVEL
+      value: DEBUG
+
 
 mongodb:
   enabled: false
